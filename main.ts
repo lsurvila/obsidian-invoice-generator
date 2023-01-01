@@ -9,7 +9,7 @@ const DEFAULT_SETTINGS: InvoiceGeneratorSettings = {
 }
 
 export default class InvoiceGenerator extends Plugin {
-	settings: InvoiceGeneratorSettings;
+	settings!: InvoiceGeneratorSettings;
 
 	private readonly modal = new SampleModal(this.app);
 
