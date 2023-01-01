@@ -1,7 +1,7 @@
 {
 	"name": "obsidian-invoice-generator",
 	"version": "1.0.0",
-	"description": "Generates invoice in PDF format",
+	"description": "Generates Monthly Invoice",
 	"main": "main.js",
 	"scripts": {
 		"dev": "node esbuild.config.mjs",

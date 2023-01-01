@@ -3,8 +3,8 @@
 	"name": "Invoice Generator",
 	"version": "1.0.0",
 	"minAppVersion": "0.15.0",
-	"description": "Generates invoice in PDF format",
-	"author": "lsurvila",
+	"description": "Generates Monthly Invoice",
+	"author": "Liudas Survila",
 	"authorUrl": "https://github.com/lsurvila/obsidian-invoice-generator",
 	"isDesktopOnly": false
 }
