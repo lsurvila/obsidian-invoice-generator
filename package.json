@@ -1,7 +1,7 @@
 {
-	"name": "obsidian-sample-plugin",
+	"name": "obsidian-invoice-generator",
 	"version": "1.0.0",
-	"description": "This is a sample plugin for Obsidian (https://obsidian.md)",
+	"description": "Generates invoice in PDF format",
 	"main": "main.js",
 	"scripts": {
 		"dev": "node esbuild.config.mjs",
