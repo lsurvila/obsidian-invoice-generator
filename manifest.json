@@ -10,9 +10,31 @@
 	"settings": {
     "invoiceFolder": {
       "type": "string",
-      "default": "invoices",
-      "label": "Invoice Folder",
-      "description": "Folder where invoices will be generated"
-    }
+      "default": "invoices"
+    },
+		"invoiceNumber": {
+			"type": "number",
+			"default": "1"
+		},
+		"issuerName": {
+			"type": "string",
+			"default": ""
+		},
+		"issuerAddress": {
+			"type": "string",
+			"default": ""
+		},
+		"issuerEmail": {
+			"type": "string",
+			"default": ""
+		},
+		"hourlyRate": {
+			"type": "number",
+			"default": "0"
+		},
+		"wiringInstructions": {
+			"type": "text",
+			"default": ""
+		}
   }
 }
