@@ -1,9 +1,9 @@
-import { App, Modal, Plugin, Vault, Workspace } from 'obsidian';
-import { InvoiceGeneratorSettingTab } from 'settings';
-import { format, getDaysInMonth, isWeekend } from 'date-fns';
+import {App, Modal, Plugin, Vault, Workspace} from 'obsidian';
+import {InvoiceGeneratorSettingTab} from 'settings';
+import {format, getDaysInMonth, isWeekend} from 'date-fns';
 
 interface InvoiceGeneratorSettings {
-  invoiceFolder: string;
+	invoiceFolder: string;
 	invoiceNumber: number;
 	issuerName: string;
 	issuerAddress: string;
@@ -13,7 +13,7 @@ interface InvoiceGeneratorSettings {
 }
 
 const DEFAULT_SETTINGS: Partial<InvoiceGeneratorSettings> = {
-  invoiceFolder: "invoices",
+	invoiceFolder: "invoices",
 	invoiceNumber: 1,
 	issuerName: "",
 	issuerAddress: "",
@@ -57,7 +57,7 @@ export default class InvoiceGenerator extends Plugin {
 
 		// When registering intervals, this function will automatically clear the interval when the plugin is disabled.
 		this.registerInterval(window.setInterval(() => console.log('setInterval'), 5 * 60 * 1000));
-  }
+	}
 
 	async generateInvoice() {
 		// Get current invoice number from plugin settings
@@ -66,32 +66,32 @@ export default class InvoiceGenerator extends Plugin {
 		// Get name of invoice issuer
 		let issuerName = this.settings.issuerName;
 
-    // Calculate previous month and year
-    const { month, year } = this.getPreviousMonth();
+		// Calculate previous month and year
+		const {month, year} = this.getPreviousMonth();
 		// Convert month and year to strings
 		const date = format(new Date(year, month), 'MMMM yyyy');
 
 		// The number of hours of service provided in the previous month
 		const workingHours = this.calculateWorkingHours(month, year)
 
-    // Generate page path for previous month's invoice
-    const pagePath = this.getInvoicePagePath(invoiceNumber, issuerName, date);
+		// Generate page path for previous month's invoice
+		const pagePath = this.getInvoicePagePath(invoiceNumber, issuerName, date);
 
-    // Create page content for invoice
-    const pageContent = this.createInvoiceContent(invoiceNumber, issuerName, date, workingHours);
+		// Create page content for invoice
+		const pageContent = this.createInvoiceContent(invoiceNumber, issuerName, date, workingHours);
 
-    // Create the page
-    const page = await this.vault.create(await pagePath, pageContent);
-    console.log(`${pagePath} created!`);
+		// Create the page
+		const page = await this.vault.create(await pagePath, pageContent);
+		console.log(`${pagePath} created!`);
 
 		// Increment invoice number and save it to plugin settings
-    invoiceNumber += 1;
-    this.settings.invoiceNumber = invoiceNumber;
+		invoiceNumber += 1;
+		this.settings.invoiceNumber = invoiceNumber;
 		await this.saveSettings();
 
 		// Open invoice page in the current Obsidian workspace
-    this.workspace.getLeaf().openFile(page)
-  }
+		this.workspace.getLeaf().openFile(page)
+	}
 
 	calculateWorkingHours(month: number, year: number): number {
 		const daysInMonth = getDaysInMonth(new Date(year, month)); // The number of days in the previous month
@@ -99,46 +99,46 @@ export default class InvoiceGenerator extends Plugin {
 
 		// Loop through each day of the previous month
 		for (let i = 1; i <= daysInMonth; i++) {
-  		const date = new Date(year, month, i);
-  		if (!isWeekend(date)) {
-    		// If the day is not a weekend day, increment the workdays counter
-    		workdays++;
+			const date = new Date(year, month, i);
+			if (!isWeekend(date)) {
+				// If the day is not a weekend day, increment the workdays counter
+				workdays++;
 			}
-  	}
-		const hours = workdays * 8; 
+		}
+		const hours = workdays * 8;
 		return hours;
 	}
 
-  getPreviousMonth(): { month: number, year: number } {
-    // Get current date
-    const currentDate = new Date();
+	getPreviousMonth(): { month: number, year: number } {
+		// Get current date
+		const currentDate = new Date();
 
-    // Get previous month
-    let month = currentDate.getMonth() - 1;
+		// Get previous month
+		let month = currentDate.getMonth() - 1;
 
-    // Get year for previous month
-    let year = currentDate.getFullYear();
-    if (month < 0) {
-      month = 11;
-      year -= 1;
-    }
+		// Get year for previous month
+		let year = currentDate.getFullYear();
+		if (month < 0) {
+			month = 11;
+			year -= 1;
+		}
 		console.log(month + " " + year)
-    return { month, year };
-  }
+		return {month, year};
+	}
 
 	async loadSettings() {
-    this.settings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData());
-  }
+		this.settings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData());
+	}
 
-  async saveSettings() {
-    await this.saveData(this.settings);
-  }
+	async saveSettings() {
+		await this.saveData(this.settings);
+	}
 
-  async getInvoicePagePath(invoiceNumber: number, issuerName: string, date: string): Promise<string> {
+	async getInvoicePagePath(invoiceNumber: number, issuerName: string, date: string): Promise<string> {
 		const invoiceNumberStr = `${invoiceNumber.toString().padStart(4, "0")}`
 
 		// Generate invoice page file name with invoice number included
-    const invoicePageName = `Invoice for ${date} - ${issuerName} (#${invoiceNumberStr})`;
+		const invoicePageName = `Invoice for ${date} - ${issuerName} (#${invoiceNumberStr})`;
 
 		// Get invoice folder from plugin settings
 		const invoiceFolder = this.settings.invoiceFolder;
@@ -146,16 +146,19 @@ export default class InvoiceGenerator extends Plugin {
 		// Create folder(s)
 		await this.vault.adapter.mkdir(invoiceFolder);
 
-    // Return file name with invoice folder prefix
-    return `${invoiceFolder}/${invoicePageName}.md`;
-  }
+		// Return file name with invoice folder prefix
+		return `${invoiceFolder}/${invoicePageName}.md`;
+	}
 
-  createInvoiceContent(invoiceNumber: number, issuerName: string, date: string, workingHours: number): string {
+	createInvoiceContent(invoiceNumber: number, issuerName: string, date: string, workingHours: number): string {
 		const currentDate = format(new Date(), 'dd-MM-yyyy')
 		const issuerAddress = this.settings.issuerAddress;
 		const issuerEmail = this.settings.issuerEmail;
-		const hourlyRate = this.settings.hourlyRate.toLocaleString("en-US", { style: "currency", currency: "USD" });
-		const amount = (this.settings.hourlyRate * workingHours).toLocaleString("en-US", { style: "currency", currency: "USD" });
+		const hourlyRate = this.settings.hourlyRate.toLocaleString("en-US", {style: "currency", currency: "USD"});
+		const amount = (this.settings.hourlyRate * workingHours).toLocaleString("en-US", {
+			style: "currency",
+			currency: "USD"
+		});
 		const wiringInstructions = this.settings.wiringInstructions.split(/\r?\n/);
 		const invoiceContent = `
 # Invoice
@@ -184,7 +187,7 @@ ${issuerEmail}
 | Bank Name             | ${wiringInstructions[2]}      |
 `.trim();
 		return invoiceContent;
-  }
+	}
 
 	onunload() {
 		// this.modal.close();

@@ -8,10 +8,10 @@
 	"authorUrl": "https://github.com/lsurvila/obsidian-invoice-generator",
 	"isDesktopOnly": false,
 	"settings": {
-    "invoiceFolder": {
-      "type": "string",
-      "default": "invoices"
-    },
+		"invoiceFolder": {
+			"type": "string",
+			"default": "invoices"
+		},
 		"invoiceNumber": {
 			"type": "number",
 			"default": "1"
@@ -36,5 +36,5 @@
 			"type": "text",
 			"default": ""
 		}
-  }
+	}
 }

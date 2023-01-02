@@ -1,21 +1,21 @@
 .setting-text {
-  min-width: 250px;
-  width: 250px;
+	min-width: 250px;
+	width: 250px;
 }
 
 .setting-text-area {
-  min-height: 100px;
-  height: 100px;
-  min-width: 250px;
-  max-width: 250px;
-  width: 250px;
+	min-height: 100px;
+	height: 100px;
+	min-width: 250px;
+	max-width: 250px;
+	width: 250px;
 }
 
 td {
-  min-height: 40px;
-  height: 40px;
+	min-height: 40px;
+	height: 40px;
 }
 
 tr:last-of-type td:nth-child(3) {
-  text-align: right;
+	text-align: right;
 }
