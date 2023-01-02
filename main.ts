@@ -64,7 +64,7 @@ export default class InvoiceGenerator extends Plugin {
 		let invoiceNumber = this.settings.invoiceNumber;
 
 		// Get name of invoice issuer
-		let issuerName = this.settings.issuerName;
+		const issuerName = this.settings.issuerName;
 
 		// Calculate previous month and year
 		const {month, year} = this.getPreviousMonth();
@@ -90,7 +90,7 @@ export default class InvoiceGenerator extends Plugin {
 		await this.saveSettings();
 
 		// Open invoice page in the current Obsidian workspace
-		this.workspace.getLeaf().openFile(page)
+		await this.workspace.getLeaf().openFile(page)
 	}
 
 	calculateWorkingHours(month: number, year: number): number {
@@ -105,8 +105,7 @@ export default class InvoiceGenerator extends Plugin {
 				workdays++;
 			}
 		}
-		const hours = workdays * 8;
-		return hours;
+		return  workdays * 8;
 	}
 
 	getPreviousMonth(): { month: number, year: number } {
@@ -160,7 +159,7 @@ export default class InvoiceGenerator extends Plugin {
 			currency: "USD"
 		});
 		const wiringInstructions = this.settings.wiringInstructions.split(/\r?\n/);
-		const invoiceContent = `
+		return `
 # Invoice
 
 Date: ${currentDate}
@@ -186,7 +185,6 @@ ${issuerEmail}
 | ACH, IBAN, SWIFT CODE | ${wiringInstructions[1]}      |
 | Bank Name             | ${wiringInstructions[2]}      |
 `.trim();
-		return invoiceContent;
 	}
 
 	onunload() {
