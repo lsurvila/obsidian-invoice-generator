@@ -1,4 +1,4 @@
-import { App, Modal, Plugin, Vault, Workspace } from "obsidian";
+import { Plugin, Vault, Workspace } from "obsidian";
 import { InvoiceGeneratorSettingTab } from "settings";
 import { format, getDaysInMonth, isWeekend } from "date-fns";
 
@@ -27,8 +27,6 @@ export default class InvoiceGenerator extends Plugin {
 	workspace: Workspace = this.app.workspace;
 	settings!: InvoiceGeneratorSettings;
 
-	modal: SampleModal = new SampleModal(this.app);
-
 	async onload() {
 		await this.loadSettings();
 		this.addSettingTab(new InvoiceGeneratorSettingTab(this.app, this));
@@ -37,15 +35,6 @@ export default class InvoiceGenerator extends Plugin {
 			// Called when the user clicks the icon.
 			// this.modal.open();
 			this.generateInvoice();
-		});
-
-		// This adds a simple command that can be triggered anywhere
-		this.addCommand({
-			id: "open-sample-modal-simple",
-			name: "Open sample modal (simple)",
-			callback: () => {
-				this.modal.open();
-			},
 		});
 
 		// If the plugin hooks up any global DOM events (on parts of the app that doesn't belong to this plugin)
@@ -215,25 +204,5 @@ ${issuerEmail}
 | ACH, IBAN, SWIFT CODE | ${wiringInstructions[1]}      |
 | Bank Name             | ${wiringInstructions[2]}      |
 `.trim();
-	}
-
-	onunload() {
-		// this.modal.close();
-	}
-}
-
-class SampleModal extends Modal {
-	constructor(app: App) {
-		super(app);
-	}
-
-	onOpen() {
-		const { contentEl } = this;
-		contentEl.setText("Invoice Generator");
-	}
-
-	onClose() {
-		const { contentEl } = this;
-		contentEl.empty();
 	}
 }
