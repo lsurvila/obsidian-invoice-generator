@@ -1,6 +1,6 @@
-import {App, Modal, Plugin, Vault, Workspace} from 'obsidian';
-import {InvoiceGeneratorSettingTab} from 'settings';
-import {format, getDaysInMonth, isWeekend} from 'date-fns';
+import { App, Modal, Plugin, Vault, Workspace } from "obsidian";
+import { InvoiceGeneratorSettingTab } from "settings";
+import { format, getDaysInMonth, isWeekend } from "date-fns";
 
 interface InvoiceGeneratorSettings {
 	invoiceFolder: string;
@@ -19,13 +19,12 @@ const DEFAULT_SETTINGS: Partial<InvoiceGeneratorSettings> = {
 	issuerAddress: "",
 	issuerEmail: "",
 	hourlyRate: 0,
-	wiringInstructions: ""
+	wiringInstructions: "",
 };
 
 export default class InvoiceGenerator extends Plugin {
-
 	vault: Vault = this.app.vault;
-	workspace: Workspace = this.app.workspace
+	workspace: Workspace = this.app.workspace;
 	settings!: InvoiceGeneratorSettings;
 
 	modal: SampleModal = new SampleModal(this.app);
@@ -34,7 +33,7 @@ export default class InvoiceGenerator extends Plugin {
 		await this.loadSettings();
 		this.addSettingTab(new InvoiceGeneratorSettingTab(this.app, this));
 		// This creates an icon in the left ribbon.
-		this.addRibbonIcon('dollar-sign', 'Generate Monthly Invoice', () => {
+		this.addRibbonIcon("dollar-sign", "Generate Monthly Invoice", () => {
 			// Called when the user clicks the icon.
 			// this.modal.open();
 			this.generateInvoice();
@@ -42,21 +41,23 @@ export default class InvoiceGenerator extends Plugin {
 
 		// This adds a simple command that can be triggered anywhere
 		this.addCommand({
-			id: 'open-sample-modal-simple',
-			name: 'Open sample modal (simple)',
+			id: "open-sample-modal-simple",
+			name: "Open sample modal (simple)",
 			callback: () => {
 				this.modal.open();
-			}
+			},
 		});
 
 		// If the plugin hooks up any global DOM events (on parts of the app that doesn't belong to this plugin)
 		// Using this function will automatically remove the event listener when this plugin is disabled.
-		this.registerDomEvent(document, 'click', (evt: MouseEvent) => {
-			console.log('click', evt);
+		this.registerDomEvent(document, "click", (evt: MouseEvent) => {
+			console.log("click", evt);
 		});
 
 		// When registering intervals, this function will automatically clear the interval when the plugin is disabled.
-		this.registerInterval(window.setInterval(() => console.log('setInterval'), 5 * 60 * 1000));
+		this.registerInterval(
+			window.setInterval(() => console.log("setInterval"), 5 * 60 * 1000)
+		);
 	}
 
 	async generateInvoice() {
@@ -67,18 +68,27 @@ export default class InvoiceGenerator extends Plugin {
 		const issuerName = this.settings.issuerName;
 
 		// Calculate previous month and year
-		const {month, year} = this.getPreviousMonth();
+		const { month, year } = this.getPreviousMonth();
 		// Convert month and year to strings
-		const date = format(new Date(year, month), 'MMMM yyyy');
+		const date = format(new Date(year, month), "MMMM yyyy");
 
 		// The number of hours of service provided in the previous month
-		const workingHours = this.calculateWorkingHours(month, year)
+		const workingHours = this.calculateWorkingHours(month, year);
 
 		// Generate page path for previous month's invoice
-		const pagePath = this.getInvoicePagePath(invoiceNumber, issuerName, date);
+		const pagePath = this.getInvoicePagePath(
+			invoiceNumber,
+			issuerName,
+			date
+		);
 
 		// Create page content for invoice
-		const pageContent = this.createInvoiceContent(invoiceNumber, issuerName, date, workingHours);
+		const pageContent = this.createInvoiceContent(
+			invoiceNumber,
+			issuerName,
+			date,
+			workingHours
+		);
 
 		// Create the page
 		const page = await this.vault.create(await pagePath, pageContent);
@@ -90,7 +100,7 @@ export default class InvoiceGenerator extends Plugin {
 		await this.saveSettings();
 
 		// Open invoice page in the current Obsidian workspace
-		await this.workspace.getLeaf().openFile(page)
+		await this.workspace.getLeaf().openFile(page);
 	}
 
 	calculateWorkingHours(month: number, year: number): number {
@@ -105,10 +115,10 @@ export default class InvoiceGenerator extends Plugin {
 				workdays++;
 			}
 		}
-		return  workdays * 8;
+		return workdays * 8;
 	}
 
-	getPreviousMonth(): { month: number, year: number } {
+	getPreviousMonth(): { month: number; year: number } {
 		// Get current date
 		const currentDate = new Date();
 
@@ -121,20 +131,28 @@ export default class InvoiceGenerator extends Plugin {
 			month = 11;
 			year -= 1;
 		}
-		console.log(month + " " + year)
-		return {month, year};
+		console.log(month + " " + year);
+		return { month, year };
 	}
 
 	async loadSettings() {
-		this.settings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData());
+		this.settings = Object.assign(
+			{},
+			DEFAULT_SETTINGS,
+			await this.loadData()
+		);
 	}
 
 	async saveSettings() {
 		await this.saveData(this.settings);
 	}
 
-	async getInvoicePagePath(invoiceNumber: number, issuerName: string, date: string): Promise<string> {
-		const invoiceNumberStr = `${invoiceNumber.toString().padStart(4, "0")}`
+	async getInvoicePagePath(
+		invoiceNumber: number,
+		issuerName: string,
+		date: string
+	): Promise<string> {
+		const invoiceNumberStr = `${invoiceNumber.toString().padStart(4, "0")}`;
 
 		// Generate invoice page file name with invoice number included
 		const invoicePageName = `Invoice for ${date} - ${issuerName} (#${invoiceNumberStr})`;
@@ -149,16 +167,28 @@ export default class InvoiceGenerator extends Plugin {
 		return `${invoiceFolder}/${invoicePageName}.md`;
 	}
 
-	createInvoiceContent(invoiceNumber: number, issuerName: string, date: string, workingHours: number): string {
-		const currentDate = format(new Date(), 'dd-MM-yyyy')
+	createInvoiceContent(
+		invoiceNumber: number,
+		issuerName: string,
+		date: string,
+		workingHours: number
+	): string {
+		const currentDate = format(new Date(), "dd-MM-yyyy");
 		const issuerAddress = this.settings.issuerAddress;
 		const issuerEmail = this.settings.issuerEmail;
-		const hourlyRate = this.settings.hourlyRate.toLocaleString("en-US", {style: "currency", currency: "USD"});
-		const amount = (this.settings.hourlyRate * workingHours).toLocaleString("en-US", {
+		const hourlyRate = this.settings.hourlyRate.toLocaleString("en-US", {
 			style: "currency",
-			currency: "USD"
+			currency: "USD",
 		});
-		const wiringInstructions = this.settings.wiringInstructions.split(/\r?\n/);
+		const amount = (this.settings.hourlyRate * workingHours).toLocaleString(
+			"en-US",
+			{
+				style: "currency",
+				currency: "USD",
+			}
+		);
+		const wiringInstructions =
+			this.settings.wiringInstructions.split(/\r?\n/);
 		return `
 # Invoice
 
@@ -198,12 +228,12 @@ class SampleModal extends Modal {
 	}
 
 	onOpen() {
-		const {contentEl} = this;
-		contentEl.setText('Invoice Generator');
+		const { contentEl } = this;
+		contentEl.setText("Invoice Generator");
 	}
 
 	onClose() {
-		const {contentEl} = this;
+		const { contentEl } = this;
 		contentEl.empty();
 	}
 }
