@@ -35,6 +35,10 @@
 		"wiringInstructions": {
 			"type": "text",
 			"default": ""
+		},
+		"totalDaysOff": {
+			"type": "number",
+			"default": "0"
 		}
 	}
 }

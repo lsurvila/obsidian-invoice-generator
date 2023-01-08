@@ -136,5 +136,19 @@ Barclays
 					})
 					.inputEl.addClass("setting-text-area")
 			);
+		new Setting(containerEl)
+			.setName("Total Days Off")
+			.setDesc("Enter the number of days off you took last month. Weekends are not counted.")
+			.addText((text) =>
+				text
+					.setPlaceholder("e.g. 10")
+					.setValue(this.plugin.settings.totalDaysOff.toString())
+					.onChange(async (value) => {
+						this.plugin.settings.totalDaysOff =
+							Number.parseInt(value);
+						await this.plugin.saveSettings();
+					})
+					.inputEl.addClass("setting-text")
+			);
 	}
 }

@@ -10,6 +10,7 @@ interface InvoiceGeneratorSettings {
 	issuerEmail: string;
 	hourlyRate: number;
 	wiringInstructions: string;
+	totalDaysOff: number;
 }
 
 const DEFAULT_SETTINGS: Partial<InvoiceGeneratorSettings> = {
@@ -20,6 +21,7 @@ const DEFAULT_SETTINGS: Partial<InvoiceGeneratorSettings> = {
 	issuerEmail: "",
 	hourlyRate: 0,
 	wiringInstructions: "",
+	totalDaysOff: 0,
 };
 
 export default class InvoiceGenerator extends Plugin {
@@ -93,7 +95,12 @@ export default class InvoiceGenerator extends Plugin {
 	}
 
 	calculateWorkingHours(month: number, year: number): number {
-		const daysInMonth = getDaysInMonth(new Date(year, month)); // The number of days in the previous month
+		// The number of days in the previous month
+		const daysInMonth = getDaysInMonth(new Date(year, month));
+
+		// Additional days off
+		const daysOff = this.settings.totalDaysOff;
+
 		let workdays = 0;
 
 		// Loop through each day of the previous month
@@ -104,6 +111,9 @@ export default class InvoiceGenerator extends Plugin {
 				workdays++;
 			}
 		}
+
+		// Subtract additional days off
+		workdays -= daysOff;
 		return workdays * 8;
 	}
 
